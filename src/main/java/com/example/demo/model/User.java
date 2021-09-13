@@ -4,14 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,21 +21,22 @@ public class User {
 	@Column(unique = true)
 	private String username;
 	private String password;
-	private String role;
 	@Column(unique = true)
 	private String email;
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
 	private List<Note> notes = new ArrayList<>();
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	private Role role;
 	
 	private boolean enabled;
 
-	public User(int id, String username, String password, String role, String email) {
+	public User(int id, String username, String password, String email, Role role) {
 		this.id = id;
 		this.username = username;
 		this.password = password;
-		this.role = role;
 		this.email = email;
+		this.role = role;
 	}
 
 	public User() {
@@ -95,15 +89,15 @@ public class User {
 		this.password = password;
 	}
 
-	public String getRole() {
+
+	public Role getRole() {
 		return role;
 	}
 
-	public void setRole(String role) {
+	public void setRole(Role role) {
 		this.role = role;
 	}
 
-	
 	public String getEmail() {
 		return email;
 	}
@@ -113,25 +107,28 @@ public class User {
 	}
 
 	@Override
-	public String toString() {
-		return "User [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role + "]";
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		User user = (User) o;
+		return id == user.id && enabled == user.enabled && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(notes, user.notes) && Objects.equals(role, user.role);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, password, role, username);
+		return Objects.hash(id, username, password, email, notes, role, enabled);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		User other = (User) obj;
-		return id == other.id && Objects.equals(password, other.password) && Objects.equals(role, other.role)
-				&& Objects.equals(username, other.username);
+	public String toString() {
+		return "User{" +
+				"id=" + id +
+				", username='" + username + '\'' +
+				", password='" + password + '\'' +
+				", email='" + email + '\'' +
+				", notes=" + notes +
+				", role=" + role +
+				", enabled=" + enabled +
+				'}';
 	}
 }

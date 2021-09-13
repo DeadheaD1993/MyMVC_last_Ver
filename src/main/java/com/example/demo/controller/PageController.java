@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.Role;
+import com.example.demo.repository.RoleRepository;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -23,12 +25,15 @@ public class PageController {
 
 	private TokenRepository tokenRepository;
 
+	private RoleRepository roleRepository;
+
 	public PageController(UserRepository userRepository, PasswordEncoder passwordEncoder, MailService mailService,
-			TokenRepository tokenRepository) {
+			TokenRepository tokenRepository, RoleRepository roleRepository) {
 		this.userRepository = userRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.mailService = mailService;
 		this.tokenRepository = tokenRepository;
+		this.roleRepository = roleRepository;
 	}
 
 	@GetMapping
@@ -61,7 +66,8 @@ public class PageController {
 		if (user != null) {
 			return "redirect:/signup?error=username_exists";
 		}
-		user = new User(0, username, passwordEncoder.encode(password), "USER", email);
+		Role role = roleRepository.findByRole("USER");
+		user = new User(0, username, passwordEncoder.encode(password), email, role);
 		user = userRepository.save(user);
 		ConfirmationToken token = new ConfirmationToken(user);
 		url = url.replace("signup", "confirm");
