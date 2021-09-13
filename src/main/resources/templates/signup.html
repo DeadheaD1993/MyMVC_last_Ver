@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+	<h2>Sign up, please</h2>
+	<form id="form" action="/signup" method="post">
+		<div>
+			<input type="text" name="username" placeholder="Username">
+		</div>
+		<div>
+			<input type="password" name="password" placeholder="Password"
+				pattern="" required="required">
+		</div>
+		<div>
+			<input type="password" name="confirmPassword"
+				placeholder="Confirm password" pattern="[a-zA-Z0-9]{8,}"
+				required="required">
+		</div>
+		<div>
+			<input type="email" name="email" placeholder="test123@mail.com"
+				pattern=""
+				required="required">
+		</div>
+		<input name="url" type="hidden">
+		<div>
+			<button type="button" onclick="submitForm()">Sign Up Button</button>
+		</div>
+	</form>
+</body>
+<script type="text/javascript" src="/js/signup.js"></script>
+</html>
